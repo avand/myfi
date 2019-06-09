@@ -1,0 +1,2 @@
+class PlaidItem < ApplicationRecord
+end
