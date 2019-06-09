@@ -1,0 +1,27 @@
+<div class="my-sm-3">
+  <%= link_to '< Back to Transactions', transactions_path %>
+</div>
+
+<table class="table mt-sm-3">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Default allocation</th>
+      <th>Plaid ID</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @accounts.each do |account| %>
+      <tr>
+        <td><%= account.name %></td>
+        <td><%= account.type %></td>
+        <td><%= account.default_allocation %></td>
+        <td><%= account.plaid_id %></td>
+        <td><%= link_to 'Edit', edit_account_path(account) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
