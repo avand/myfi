@@ -1,3 +1,5 @@
+require 'csv'
+
 class TransactionsController < ApplicationController
   before_action :load_plaid_items, only: :import
   before_action :import_accounts, only: :import
@@ -5,15 +7,37 @@ class TransactionsController < ApplicationController
   def index
     @transactions = Transaction.includes(:account).order(date: :desc)
 
-    if params[:account_type].present?
-      @transactions = @transactions.where(accounts: { type: params[:account_type] })
+    if params[:filters].present?
+      if params[:filters][:account_type].present?
+        @transactions = @transactions.where(accounts: { type: params[:filters][:account_type] })
+      end
+
+      if params[:filters][:allocation].present?
+        @transactions = @transactions.where(accounts: { default_allocation: params[:filters][:allocation] })
+      end
     end
 
-    if params[:allocation].present?
-      @transactions = @transactions.where(accounts: { default_allocation: params[:allocation] })
-    end
+    respond_to do |format|
+      format.html
+      format.csv do
+        csv = CSV.generate(headers: true) do |csv|
+          csv << %w(date description amount account default_allocation year_month)
 
-    @accounts = @transactions.map(&:account).uniq
+          @transactions.each do |transaction|
+            csv << [
+              transaction.date,
+              transaction.name,
+              transaction.amount,
+              transaction.account.name,
+              transaction.account.default_allocation,
+              transaction.year_month,
+            ]
+          end
+        end
+
+        send_data csv, filename: 'transactions.csv'
+      end
+    end
   end
 
   def import
