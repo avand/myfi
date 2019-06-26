@@ -43,6 +43,7 @@ class TransactionsController < ApplicationController
   def import
     start_date = params[:start_date]
     end_date = params[:end_date]
+    @new_transactions = []
 
     @plaid_items.each do |plaid_item|
       transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date)
@@ -55,18 +56,22 @@ class TransactionsController < ApplicationController
 
       @transactions.each do |transaction|
         account = Account.find_by(plaid_id: transaction.account_id)
+        transaction = Transaction.find_by(plaid_transaction_id: transaction.transaction_id)
 
-        account.transactions.create_with({
-          plaid_account_id: transaction.account_id,
-          account_id: account.id,
-          amount: transaction.amount,
-          name: transaction.name,
-          date: transaction.date,
-        }).find_or_create_by(plaid_transaction_id: transaction.transaction_id)
+        if transaction.blank?
+          @new_transactions << account.transactions.create({
+            account_id: account.id,
+            amount: transaction.amount,
+            date: transaction.date,
+            name: transaction.name,
+            plaid_account_id: transaction.account_id,
+            plaid_transaction_id: transaction.transaction_id,
+          })
+        end
       end
     end
 
-    redirect_to transactions_path, notice: "Imported #{@transactions.length} transaction(s) from #{Account.count} account(s) and #{PlaidItem.count} institution(s)"
+    redirect_to transactions_path, notice: "Imported #{@new_transactions.length} new transaction(s) from #{Account.count} account(s) and #{PlaidItem.count} institution(s)"
   end
 
   private
