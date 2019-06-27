@@ -55,7 +55,7 @@ class TransactionsController < ApplicationController
 
     @plaid_items.each do |plaid_item|
       transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date)
-      @transactions = transaction_response.transactions
+      @transactions = transaction_response.transactions.select { |t| !t.pending }
 
       while @transactions.length < transaction_response['total_transactions']
         transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date, offset: @transactions.length)
@@ -64,9 +64,9 @@ class TransactionsController < ApplicationController
 
       @transactions.each do |transaction|
         account = Account.find_by(plaid_id: transaction.account_id)
-        transaction = Transaction.find_by(plaid_transaction_id: transaction.transaction_id)
+        existing_transaction = Transaction.find_by(plaid_transaction_id: transaction.transaction_id)
 
-        if transaction.blank?
+        if existing_transaction.blank?
           @new_transactions << account.transactions.create({
             account_id: account.id,
             amount: transaction.amount,
