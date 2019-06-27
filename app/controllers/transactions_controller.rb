@@ -15,6 +15,14 @@ class TransactionsController < ApplicationController
       if params[:filters][:allocation].present?
         @transactions = @transactions.where(accounts: { default_allocation: params[:filters][:allocation] })
       end
+
+      if params[:filters][:start_date].present?
+        @transactions = @transactions.where('date >= ?', params[:filters][:start_date])
+      end
+
+      if params[:filters][:end_date].present?
+        @transactions = @transactions.where('date < ?', params[:filters][:end_date])
+      end
     end
 
     respond_to do |format|

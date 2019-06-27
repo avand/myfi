@@ -2,31 +2,41 @@
   <div class="col-sm-3">
     <%= form_tag transactions_path, method: :get, class: 'mt-sm-3' do %>
       <div class="form-group">
-        <%= label_tag 'filters[account_type]', 'Account type:' %>
+        <small class="text-muted"><%= label_tag 'filters[account_type]', 'Account type' %></small>
         <%= select_tag 'filters[account_type]', options_for_select(Account::TYPES, params[:filters] && params[:filters][:account_type]), include_blank: 'all', class: 'form-control' %>
       </div>
 
       <div class="form-group">
-        <%= label_tag 'filters[allocation]', 'Allocation:' %>
+        <small class="text-muted"><%= label_tag 'filters[allocation]', 'Allocation' %></small>
         <%= select_tag 'filters[allocation]', options_for_select(Account::ALLOCATIONS, params[:filters] && params[:filters][:allocation]), include_blank: 'all', class: 'form-control' %>
       </div>
 
-      <input type="submit" value="Filter" class="btn btn-secondary">
-      <div class="float-right">
-        <%= link_to 'Download CSV', transactions_path(format: 'csv', filters: params[:filters].try(:to_unsafe_hash)), class: 'btn btn-outline-secondary' %>
+      <div class="form-group">
+        <div class="row">
+          <div class="col-lg-6">
+            <small class="text-muted"><%= label_tag 'filters[start_date]', 'Start date' %></small>
+            <input type="date" name="filters[start_date]" class="form-control" value="<%= params[:filters] && params[:filters][:start_date] -%>" />
+          </div>
+          <div class="col-lg-6">
+            <small class="text-muted"><%= label_tag 'filters[end_date]', 'End date' %></small>
+            <input type="date" name="filters[end_date]" class="form-control" value="<%= params[:filters] && params[:filters][:end_date] -%>" />
+          </div>
+        </div>
       </div>
+
+      <input type="submit" value="Filter" class="btn btn-primary">
+      <%= link_to 'Download CSV', transactions_path(format: 'csv', filters: params[:filters].try(:to_unsafe_hash)), class: 'btn btn-outline-primary' %>
     <% end %>
   </div>
   <div class="col-sm-9">
     <table class="table table-borderless table-striped">
       <thead>
         <tr>
-          <th>Date</th>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>Account</th>
-          <th>Default allocation</th>
-          <th>Year/Month</th>
+          <th><small class="text-muted text-nowrap">Date</small></th>
+          <th><small class="text-muted text-nowrap">Description</small></th>
+          <th><small class="text-muted text-nowrap">Amount</small></th>
+          <th><small class="text-muted text-nowrap">Account</small></th>
+          <th><small class="text-muted text-nowrap">Default allocation</small></th>
         </tr>
       </thead>
 
@@ -41,8 +51,11 @@
                 <%= transaction.account.name %>
               </span>
             </td>
-            <td><%= transaction.account.default_allocation %></td>
-            <td><%= transaction.year_month %></td>
+            <td>
+              <span class="badge badge-pill badge-secondary">
+                <%= transaction.account.default_allocation %>
+              </span>
+            </td>
           </tr>
         <% end %>
       </tbody>
