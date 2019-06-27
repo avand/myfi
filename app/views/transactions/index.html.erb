@@ -1,43 +1,51 @@
-<div class="float-right">
-  <%= link_to 'Download CSV', transactions_path(format: 'csv', filters: params[:filters].try(:to_unsafe_hash)), class: 'btn btn-secondary' %>
-</div>
+<div class="row">
+  <div class="col-sm-3">
+    <%= form_tag transactions_path, method: :get, class: 'mt-sm-3' do %>
+      <div class="form-group">
+        <%= label_tag 'filters[account_type]', 'Account type:' %>
+        <%= select_tag 'filters[account_type]', options_for_select(Account::TYPES, params[:filters] && params[:filters][:account_type]), include_blank: 'all', class: 'form-control' %>
+      </div>
 
-<%= form_tag transactions_path, method: :get, class: 'form-inline mt-sm-3' do %>
-  <%= label_tag 'filters[account_type]', 'Account type:' %>
-  <%= select_tag 'filters[account_type]', options_for_select(Account::TYPES, params[:filters] && params[:filters][:account_type]), include_blank: 'all', class: 'form-control ml-sm-3' %>
+      <div class="form-group">
+        <%= label_tag 'filters[allocation]', 'Allocation:' %>
+        <%= select_tag 'filters[allocation]', options_for_select(Account::ALLOCATIONS, params[:filters] && params[:filters][:allocation]), include_blank: 'all', class: 'form-control' %>
+      </div>
 
-  <%= label_tag 'filters[allocation]', 'Allocation:', class: 'ml-sm-3' %>
-  <%= select_tag 'filters[allocation]', options_for_select(Account::ALLOCATIONS, params[:filters] && params[:filters][:allocation]), include_blank: 'all', class: 'form-control ml-sm-3' %>
-
-  <input type="submit" value="Search" class="btn btn-secondary ml-sm-3">
-<% end %>
-
-<table class="table table-borderless table-striped">
-  <thead>
-    <tr>
-      <th>Date</th>
-      <th>Description</th>
-      <th>Amount</th>
-      <th>Account</th>
-      <th>Default allocation</th>
-      <th>Year/Month</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @transactions.each do |transaction| %>
-      <tr>
-        <td class="text-nowrap"><%= transaction.date %></td>
-        <td><%= transaction.name %></td>
-        <td class="text-right"><%= number_to_currency transaction.amount %></td>
-        <td>
-          <span class="badge badge-pill badge-secondary">
-            <%= transaction.account.name %>
-          </span>
-        </td>
-        <td><%= transaction.account.default_allocation %></td>
-        <td><%= transaction.year_month %></td>
-      </tr>
+      <input type="submit" value="Filter" class="btn btn-secondary">
+      <div class="float-right">
+        <%= link_to 'Download CSV', transactions_path(format: 'csv', filters: params[:filters].try(:to_unsafe_hash)), class: 'btn btn-outline-secondary' %>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+  <div class="col-sm-9">
+    <table class="table table-borderless table-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th>Amount</th>
+          <th>Account</th>
+          <th>Default allocation</th>
+          <th>Year/Month</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% @transactions.each do |transaction| %>
+          <tr>
+            <td class="text-nowrap"><%= transaction.date %></td>
+            <td><%= transaction.name %></td>
+            <td class="text-right"><%= number_to_currency transaction.amount %></td>
+            <td>
+              <span class="badge badge-pill badge-secondary">
+                <%= transaction.account.name %>
+              </span>
+            </td>
+            <td><%= transaction.account.default_allocation %></td>
+            <td><%= transaction.year_month %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

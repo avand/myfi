@@ -20,7 +20,10 @@
 
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">MyFi</a>
+      <a class="navbar-brand" href="#">
+        <img src="favicon.png" width="30" height="30" class="d-inline-block align-top" alt="MyFi">
+      </a>
+
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -35,12 +38,12 @@
           </li>
         </ul>
 
-        <button id="import-button" class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#import-modal">Import Transactions</button>
-        <button id="link-button" class="btn btn-outline-secondary ml-2">Link Account</button>
+        <button id="import-button" class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#import-modal">Import Transactions</button>
+        <button id="link-button" class="btn btn-sm btn-outline-secondary ml-2">Link Account</button>
       </div>
     </nav>
 
-    <div class="container">
+    <div class="container-fluid">
       <% if flash[:notice].present? %>
         <div class="alert alert-success mt-sm-3" role="alert">
           <%= flash[:notice] %>
