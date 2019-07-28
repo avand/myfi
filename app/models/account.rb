@@ -2,6 +2,7 @@ class Account < ApplicationRecord
   self.inheritance_column = :not_type
 
   has_many :transactions
+  belongs_to :plaid_item
 
   TYPE_CHECKING = 'checking'.freeze
   TYPE_CREDIT = 'credit'.freeze

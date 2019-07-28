@@ -2,6 +2,11 @@
   <div class="col-sm-3">
     <%= form_tag transactions_path, method: :get, class: 'mt-sm-3' do %>
       <div class="form-group">
+        <small class="text-muted"><%= label_tag 'filters[account_id]', 'Account' %></small>
+        <%= collection_select(:filters, :account_id, Account.all, :id, :name, { include_blank: 'all', selected: params[:filters] && params[:filters][:account_id] }, { class: 'form-control' }) %>
+      </div>
+
+      <div class="form-group">
         <small class="text-muted"><%= label_tag 'filters[account_type]', 'Account type' %></small>
         <%= select_tag 'filters[account_type]', options_for_select(Account::TYPES, params[:filters] && params[:filters][:account_type]), include_blank: 'all', class: 'form-control' %>
       </div>

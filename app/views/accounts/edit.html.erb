@@ -18,5 +18,10 @@
     <%= f.select :default_allocation, Account::ALLOCATIONS, { include_blank: true }, { class: 'form-control' } %>
   </div>
 
+  <div class="form-group">
+    <%= f.label :plaid_item_id %>
+    <%= f.text_field :plaid_item_id, class: 'form-control' %>
+  </div>
+
   <%= f.submit 'Update', class: 'btn btn-primary' %>
 <% end %>

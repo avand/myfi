@@ -2,7 +2,7 @@ class AccountsController < ApplicationController
   before_action :load_account, only: [:edit, :update]
 
   def index
-    @accounts = Account.order(:name)
+    @accounts = Account.order(:name).includes(:plaid_item)
   end
 
   def edit
@@ -21,6 +21,6 @@ class AccountsController < ApplicationController
     end
 
     def account_params
-      params.require(:account).permit(:name, :type, :default_allocation)
+      params.require(:account).permit(:name, :type, :default_allocation, :plaid_item_id)
     end
 end

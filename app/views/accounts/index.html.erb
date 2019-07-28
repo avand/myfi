@@ -5,6 +5,7 @@
       <th>Type</th>
       <th>Default allocation</th>
       <th>Plaid ID</th>
+      <th>Plaid Item ID</th>
       <th></th>
     </tr>
   </thead>
@@ -16,7 +17,17 @@
         <td><%= account.type %></td>
         <td><%= account.default_allocation %></td>
         <td><%= account.plaid_id %></td>
-        <td><%= link_to 'Edit', edit_account_path(account) %></td>
+        <td>
+          <% if account.plaid_item %>
+            <%= account.plaid_item.id %>
+            <%= '(expired)' if account.plaid_item.expired? %>
+          <% end %>
+        </td>
+        <td>
+          <%= link_to 'Transactions', transactions_path(filters: { account_id: account.id }) %>
+          &middot;
+          <%= link_to 'Edit', edit_account_path(account) %>
+        </td>
       </tr>
     <% end %>
   </tbody>

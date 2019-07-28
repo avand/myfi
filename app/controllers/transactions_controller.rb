@@ -1,13 +1,16 @@
 require 'csv'
 
 class TransactionsController < ApplicationController
-  before_action :load_plaid_items, only: :import
   before_action :import_accounts, only: :import
 
   def index
     @transactions = Transaction.includes(:account).order(date: :desc)
 
     if params[:filters].present?
+      if params[:filters][:account_id].present?
+        @transactions = @transactions.where(accounts: { id: params[:filters][:account_id] })
+      end
+
       if params[:filters][:account_type].present?
         @transactions = @transactions.where(accounts: { type: params[:filters][:account_type] })
       end
@@ -53,7 +56,7 @@ class TransactionsController < ApplicationController
     end_date = params[:end_date]
     @new_transactions = []
 
-    @plaid_items.each do |plaid_item|
+    PlaidItem.active.each do |plaid_item|
       transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date)
       @transactions = transaction_response.transactions.select { |t| !t.pending }
 
@@ -84,16 +87,19 @@ class TransactionsController < ApplicationController
 
   private
 
-    def load_plaid_items
-      @plaid_items = PlaidItem.all
-    end
-
     def import_accounts
-      @plaid_items.each do |plaid_item|
-        accounts_response = PLAID_CLIENT.accounts.get(plaid_item.access_token)
+      @accounts = []
+
+      PlaidItem.active.each do |plaid_item|
+        begin
+          accounts_response = PLAID_CLIENT.accounts.get(plaid_item.access_token)
+        rescue
+          plaid_item.expire
+          next
+        end
 
         accounts_response.accounts.each do |account|
-          Account.create_with(name: account.name).find_or_create_by(plaid_id: account.account_id)
+          @accounts << Account.create_with(name: account.name).find_or_create_by(plaid_id: account.account_id)
         end
       end
     end
