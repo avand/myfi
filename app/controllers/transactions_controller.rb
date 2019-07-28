@@ -54,9 +54,11 @@ class TransactionsController < ApplicationController
   def import
     start_date = params[:start_date]
     end_date = params[:end_date]
+
+    @plaid_items = PlaidItem.active
     @new_transactions = []
 
-    PlaidItem.active.each do |plaid_item|
+    @plaid_items.each do |plaid_item|
       transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date)
       @transactions = transaction_response.transactions.select { |t| !t.pending }
 
@@ -82,7 +84,7 @@ class TransactionsController < ApplicationController
       end
     end
 
-    redirect_to transactions_path, notice: "Imported #{@new_transactions.length} new transaction(s) from #{Account.count} account(s) and #{PlaidItem.count} institution(s)"
+    redirect_to transactions_path, notice: "Imported #{@new_transactions.length} new transaction(s) from #{Account.count} account(s) and #{@plaid_items.count} institution(s)"
   end
 
   private
