@@ -10,13 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_09_214012) do
+ActiveRecord::Schema.define(version: 2019_07_28_195801) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
     t.string "plaid_id"
     t.string "type"
     t.string "default_allocation"
+    t.integer "plaid_item_id"
   end
 
   create_table "plaid_items", force: :cascade do |t|
