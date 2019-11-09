@@ -1,0 +1,20 @@
+<tr>
+  <td class="text-nowrap"><%= transaction.date %></td>
+  <td>
+    <div><%= transaction.name %></div>
+    <div>
+      <% if transaction.account.present? %>
+        <%= render partial: 'accounts/type', locals: { account: transaction.account, label: transaction.account.name } %>
+      <% end %>
+      <small>
+        &middot;
+        ID: <%= transaction.id %>&nbsp;&middot;
+        Occurrences: <%= transaction.occurrences %>
+      </small>
+    </div>
+  </td>
+  <td class="text-right"><%= number_to_currency transaction.amount %></td>
+  <td>
+    <%= render partial: 'form', locals: { transaction: transaction } %>
+  </td>
+</tr>

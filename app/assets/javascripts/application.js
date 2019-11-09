@@ -17,3 +17,10 @@
 //= require chartkick
 //= require Chart.bundle
 //= require_tree .
+
+$(document).ready(function() {
+  $('body').on('ajax:success', 'form[data-remote=true]', function(event) {
+    event.target.parentElement.innerHTML = event.detail[2].response;
+    $('#transaction-updated-toast').toast('show');
+  });
+})

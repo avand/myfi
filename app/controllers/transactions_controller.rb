@@ -98,4 +98,12 @@ class TransactionsController < ApplicationController
 
     redirect_to transactions_path, notice: "Imported #{@new_transactions.length} new transaction(s) from #{@accounts.count} account(s)."
   end
+
+  def update
+    transaction = Transaction.find(params[:id])
+
+    transaction.update(allocation: params[:transaction][:allocation])
+
+    render partial: 'form', locals: { transaction: transaction }, layout: false
+  end
 end

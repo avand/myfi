@@ -1,0 +1,10 @@
+<%= form_with(model: transaction) do |f| %>
+  <div class="form-row">
+    <div class="col-sm-6">
+      <%= f.select :allocation, Account::ALLOCATIONS, { include_blank: true }, { class: 'custom-select custom-select-sm' } %>
+    </div>
+    <div class="col-sm-6">
+      <%= f.submit 'Update', class: 'btn btn-sm btn-secondary' %>
+    </div>
+  </div>
+<% end %>
