@@ -2,6 +2,11 @@
   <div class="col-sm-3">
     <%= form_tag transactions_path, method: :get, class: 'mt-sm-3' do %>
       <div class="form-group">
+        <small class="text-muted"><%= label_tag 'filters[scope]', 'Scope' %></small>
+        <%= select_tag 'filters[scope]', options_for_select(['unallocated', 'unsettled'], params[:filters] && params[:filters][:scope]), include_blank: 'all', class: 'form-control' %>
+      </div>
+
+      <div class="form-group">
         <small class="text-muted"><%= label_tag 'filters[account_id]', 'Account' %></small>
         <%= collection_select(:filters, :account_id, Account.all, :id, :name, { include_blank: 'all', selected: params[:filters] && params[:filters][:account_id] }, { class: 'form-control' }) %>
       </div>
@@ -34,6 +39,10 @@
     <% end %>
   </div>
   <div class="col-sm-9">
+    <div class="mt-2">
+      <small class="mr-2"><strong>Total</strong>: <%= number_with_delimiter @transactions.count %></small>
+      <small><strong>Sum</strong>: <%= number_to_currency @transactions.sum(:amount) %></small>
+    </div>
     <table class="table table-borderless table-striped">
       <thead>
         <tr>

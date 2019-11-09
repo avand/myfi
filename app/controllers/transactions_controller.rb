@@ -6,6 +6,14 @@ class TransactionsController < ApplicationController
     @types = Account.all.map(&:type).uniq.sort
 
     if params[:filters].present?
+      if params[:filters][:scope] == 'unallocated'
+        @transactions = @transactions.where(allocation: nil)
+      end
+
+      if params[:filters][:scope] == 'unsettled'
+        @transactions = @transactions.where(settled_at: nil)
+      end
+
       if params[:filters][:account_id].present?
         @transactions = @transactions.where(accounts: { id: params[:filters][:account_id] })
       end
