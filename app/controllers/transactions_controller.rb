@@ -1,10 +1,9 @@
 require 'csv'
 
 class TransactionsController < ApplicationController
-  before_action :import_accounts, only: :import
-
   def index
     @transactions = Transaction.includes(:account).order(date: :desc)
+    @types = Account.all.map(&:type).uniq.sort
 
     if params[:filters].present?
       if params[:filters][:account_id].present?
@@ -55,54 +54,40 @@ class TransactionsController < ApplicationController
     start_date = params[:start_date]
     end_date = params[:end_date]
 
-    @plaid_items = PlaidItem.active
     @new_transactions = []
+    @accounts = Account.all
 
-    @plaid_items.each do |plaid_item|
+    @accounts.find_each do |account|
+      plaid_item = account.plaid_item
       transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date)
-      @transactions = transaction_response.transactions.select { |t| !t.pending }
 
-      while @transactions.length < transaction_response['total_transactions']
-        transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date, offset: @transactions.length)
-        @transactions += transaction_response.transactions
+      transactions = transaction_response.transactions.select { |t| !t.pending }
+
+      while transactions.length < transaction_response.total_transactions
+        transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date, offset: transactions.length)
+        transactions += transaction_response.transactions
       end
 
-      @transactions.each do |transaction|
-        account = Account.find_by(plaid_id: transaction.account_id)
-        existing_transaction = Transaction.find_by(plaid_transaction_id: transaction.transaction_id)
+      transactions.each do |transaction|
+        record = account.transactions.find_or_initialize_by({
+          amount: transaction.amount,
+          date: transaction.date,
+          name: transaction.name,
+        })
 
-        if existing_transaction.blank?
-          @new_transactions << account.transactions.create({
-            account_id: account.id,
-            amount: transaction.amount,
-            date: transaction.date,
-            name: transaction.name,
-            plaid_account_id: transaction.account_id,
-            plaid_transaction_id: transaction.transaction_id,
-          })
+        record.plaid_account_id = transaction.account_id
+        record.plaid_transaction_id = transaction.transaction_id
+
+        if record.new_record?
+          @new_transactions << record
+        else
+          record.occurrences += 1 if record.plaid_transaction_id_changed?
         end
+
+        record.save
       end
     end
 
-    redirect_to transactions_path, notice: "Imported #{@new_transactions.length} new transaction(s) from #{Account.count} account(s) and #{@plaid_items.count} institution(s)"
+    redirect_to transactions_path, notice: "Imported #{@new_transactions.length} new transaction(s) from #{@accounts.count} account(s)."
   end
-
-  private
-
-    def import_accounts
-      @accounts = []
-
-      PlaidItem.active.each do |plaid_item|
-        begin
-          accounts_response = PLAID_CLIENT.accounts.get(plaid_item.access_token)
-        rescue
-          plaid_item.expire
-          next
-        end
-
-        accounts_response.accounts.each do |account|
-          @accounts << Account.create_with(name: account.name).find_or_create_by(plaid_id: account.account_id)
-        end
-      end
-    end
 end

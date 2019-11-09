@@ -2,36 +2,30 @@ require 'rails_helper'
 
 RSpec.describe PlaidItemsController, type: :controller do
   describe 'create' do
-    let(:access_token) { 'abc123' }
+    let(:access_token) { 'access_token' }
 
     let(:plaid_client_item) do
-      item = double
-
-      allow(item).to receive(:item_id).and_return('plaid_item_123')
-      allow(item).to receive(:institution_id).and_return('ins_1')
-
-      item
+      double.tap do |item|
+        allow(item).to receive(:item_id).and_return('item_id')
+        allow(item).to receive(:institution_id).and_return('institution_id')
+      end
     end
 
     let(:plaid_client_account) do
-      account = double
-
-      allow(account).to receive(:mask).and_return('1234')
-      allow(account).to receive(:name).and_return('Account Name')
-      allow(account).to receive(:account_id).and_return('abc123def456')
-      allow(account).to receive(:type).and_return('credit')
-      allow(account).to receive(:official_name).and_return('Official Name')
-
-      account
+      double.tap do |account|
+        allow(account).to receive(:mask).and_return('mask')
+        allow(account).to receive(:name).and_return('Account Name')
+        allow(account).to receive(:account_id).and_return('account_id')
+        allow(account).to receive(:type).and_return('credit')
+        allow(account).to receive(:official_name).and_return('Official Name')
+      end
     end
 
     let(:plaid_client_institution) do
-      institution = double
-
-      allow(institution).to receive(:institution_id).and_return(plaid_client_item.institution_id)
-      allow(institution).to receive(:name).and_return('Institution Name')
-
-      institution
+      double.tap do |institution|
+        allow(institution).to receive(:institution_id).and_return(plaid_client_item.institution_id)
+        allow(institution).to receive(:name).and_return('Institution Name')
+      end
     end
 
     let(:existing_plaid_item) do
