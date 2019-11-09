@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_09_200715) do
+ActiveRecord::Schema.define(version: 2019_11_09_215027) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -43,6 +43,9 @@ ActiveRecord::Schema.define(version: 2019_11_09_200715) do
     t.datetime "updated_at", null: false
     t.integer "account_id"
     t.integer "occurrences", default: 1, null: false
+    t.string "allocation"
+    t.datetime "settled_at"
+    t.index ["allocation"], name: "index_transactions_on_allocation"
   end
 
   create_table "users", force: :cascade do |t|
