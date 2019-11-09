@@ -6,14 +6,16 @@ class Account < ApplicationRecord
 
   ALLOCATION_JEPHPH = 'jephph'.freeze
   ALLOCATION_KALEIDOSCOPE = 'kaleidoscope'.freeze
-  ALLOCATION_LIFESTYPE = 'lifestyle'.freeze
+  ALLOCATION_LIFESTYLE = 'lifestyle'.freeze
+  ALLOCATION_LIVING = 'living'.freeze
   ALLOCATION_RECURRING = 'recurring'.freeze
   ALLOCATION_TRAVEL = 'travel'.freeze
 
   ALLOCATIONS = [
     ALLOCATION_JEPHPH,
     ALLOCATION_KALEIDOSCOPE,
-    ALLOCATION_LIFESTYPE,
+    ALLOCATION_LIFESTYLE,
+    ALLOCATION_LIVING,
     ALLOCATION_RECURRING,
     ALLOCATION_TRAVEL,
   ].freeze
