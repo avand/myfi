@@ -67,7 +67,7 @@ class TransactionsController < ApplicationController
 
     @accounts.find_each do |account|
       plaid_item = account.plaid_item
-      transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date)
+      transaction_response = PLAID_CLIENT.transactions.get(plaid_item.access_token, start_date, end_date, account_ids: [account.plaid_id])
 
       transactions = transaction_response.transactions.select { |t| !t.pending }
 
