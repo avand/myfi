@@ -4,12 +4,6 @@ class Account < ApplicationRecord
   has_many :transactions
   belongs_to :plaid_item
 
-  TYPE_CHECKING = 'checking'.freeze
-  TYPE_CREDIT = 'credit'.freeze
-  TYPE_SAVINGS = 'savings'.freeze
-
-  TYPES = [TYPE_CHECKING, TYPE_CREDIT, TYPE_SAVINGS].freeze
-
   ALLOCATION_JEPHPH = 'jephph'.freeze
   ALLOCATION_KALEIDOSCOPE = 'kaleidoscope'.freeze
   ALLOCATION_LIFESTYPE = 'lifestyle'.freeze
@@ -24,6 +18,5 @@ class Account < ApplicationRecord
     ALLOCATION_TRAVEL,
   ].freeze
 
-  validates :type, inclusion: { in: TYPES, if: proc { |a| a.type.present? } }
   validates :default_allocation, inclusion: { in: ALLOCATIONS, if: proc { |a| a.default_allocation.present? } }
 end
