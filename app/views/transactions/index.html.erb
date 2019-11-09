@@ -51,7 +51,12 @@
             <td class="text-nowrap"><%= transaction.date %></td>
             <td>
               <div><%= transaction.name %></div>
-              <div><small><%= transaction.id %></small>
+              <div>
+                <small>
+                  ID: <%= transaction.id %>&nbsp;&middot;
+                  Occurrences: <%= transaction.occurrences %>
+                </small>
+              </div>
             </td>
             <td class="text-right"><%= number_to_currency transaction.amount %></td>
             <td>
