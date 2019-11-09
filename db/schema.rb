@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_28_200541) do
+ActiveRecord::Schema.define(version: 2019_09_26_040229) do
 
   create_table "accounts", force: :cascade do |t|
     t.string "name"
@@ -18,6 +18,8 @@ ActiveRecord::Schema.define(version: 2019_07_28_200541) do
     t.string "type"
     t.string "default_allocation"
     t.integer "plaid_item_id"
+    t.string "official_name"
+    t.string "mask"
   end
 
   create_table "plaid_items", force: :cascade do |t|
@@ -27,6 +29,8 @@ ActiveRecord::Schema.define(version: 2019_07_28_200541) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.datetime "expired_at"
+    t.string "institution_name"
+    t.string "institution_id"
   end
 
   create_table "transactions", force: :cascade do |t|
