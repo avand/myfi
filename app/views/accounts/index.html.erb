@@ -1,34 +1,35 @@
-<table class="table table-borderless table-striped mt-sm-3">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Type</th>
-      <th>Default allocation</th>
-      <th>Plaid ID</th>
-      <th>Plaid Item ID</th>
-      <th></th>
-    </tr>
-  </thead>
+<% @accounts.group_by(&:plaid_item).each do |plaid_item, accounts| %>
+  <div class="my-sm-4">
+    <h5><%= plaid_item.institution_name %></h5>
 
-  <tbody>
-    <% @accounts.each do |account| %>
-      <tr>
-        <td><%= account.name %></td>
-        <td><%= account.type %></td>
-        <td><%= account.default_allocation %></td>
-        <td><%= account.plaid_id %></td>
-        <td>
-          <% if account.plaid_item %>
-            <%= account.plaid_item.id %>
-            <%= '(expired)' if account.plaid_item.expired? %>
-          <% end %>
-        </td>
-        <td>
-          <%= link_to 'Transactions', transactions_path(filters: { account_id: account.id }) %>
-          &middot;
-          <%= link_to 'Edit', edit_account_path(account) %>
-        </td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <table class="table table-borderless table-striped ml-sm-3">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Default allocation</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% accounts.each do |account| %>
+          <tr>
+            <td>
+              <div>
+                <%= account.name %> (<%= account.mask -%>)
+                <%= render partial: 'type', locals: { account: account, label: account.type } %>
+              </div>
+              <div><small><%= account.official_name -%></small>
+            </td>
+            <td><%= account.default_allocation %></td>
+            <td>
+              <%= link_to 'Transactions', transactions_path(filters: { account_id: account.id }) %>
+              &middot;
+              <%= link_to 'Edit', edit_account_path(account) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

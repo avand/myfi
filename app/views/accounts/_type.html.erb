@@ -1,0 +1,18 @@
+<%
+  badge_types_by_account_type = {
+    'depository' => 'badge-success',
+    'credit' => 'badge-info',
+    'savings' => 'badge-info',
+  }
+
+  icons_by_account_type = {
+    'depository' => 'fa-money-bill-alt',
+    'credit' => 'fa-credit-card',
+    'savings' => 'fa-piggy-bank',
+  }
+%>
+<span class="badge badge-pill <%= badge_types_by_account_type[account.type] -%>">
+  <i class="far <%= icons_by_account_type[account.type] -%>"></i>
+
+  <span style="margin-left: 2px"><%= label %></span>
+</span>

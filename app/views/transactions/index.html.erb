@@ -8,7 +8,7 @@
 
       <div class="form-group">
         <small class="text-muted"><%= label_tag 'filters[account_type]', 'Account type' %></small>
-        <%= select_tag 'filters[account_type]', options_for_select(Account::TYPES, params[:filters] && params[:filters][:account_type]), include_blank: 'all', class: 'form-control' %>
+        <%= select_tag 'filters[account_type]', options_for_select(@types, params[:filters] && params[:filters][:account_type]), include_blank: 'all', class: 'form-control' %>
       </div>
 
       <div class="form-group">
@@ -49,17 +49,22 @@
         <% @transactions.each do |transaction| %>
           <tr>
             <td class="text-nowrap"><%= transaction.date %></td>
-            <td><%= transaction.name %></td>
+            <td>
+              <div><%= transaction.name %></div>
+              <div><small><%= transaction.id %></small>
+            </td>
             <td class="text-right"><%= number_to_currency transaction.amount %></td>
             <td>
-              <span class="badge badge-pill badge-secondary">
-                <%= transaction.account.name %>
-              </span>
+              <% if transaction.account.present? %>
+                <%= render partial: 'accounts/type', locals: { account: transaction.account, label: transaction.account.name } %>
+              <% end %>
             </td>
             <td>
-              <span class="badge badge-pill badge-secondary">
-                <%= transaction.account.default_allocation %>
-              </span>
+              <% if transaction.account.present? %>
+                <span class="badge badge-pill badge-secondary">
+                  <%= transaction.account.default_allocation || 'None' %>
+                </span>
+              <% end %>
             </td>
           </tr>
         <% end %>
