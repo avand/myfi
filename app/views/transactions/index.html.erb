@@ -44,16 +44,15 @@
       <small><strong>Sum</strong>: <%= number_to_currency @transactions.sum(:amount) %></small>
     </div>
     <div class="mt-2">
-      <%= line_chart @transactions.group(:date).count %>
+      <%= line_chart @transactions.group(:date).sum(:amount) %>
     </div>
-    <table class="table table-borderless table-striped">
+    <table class="table table-sm table-borderless table-striped">
       <thead>
         <tr>
           <th><small class="text-muted text-nowrap">Date</small></th>
           <th><small class="text-muted text-nowrap">Description</small></th>
-          <th><small class="text-muted text-nowrap">Amount</small></th>
+          <th class="text-right"><small class="text-muted text-nowrap">Amount</small></th>
           <th><small class="text-muted text-nowrap">Allocation</small></th>
-          <th></th>
         </tr>
       </thead>
 

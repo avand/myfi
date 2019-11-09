@@ -4,7 +4,9 @@
       <%= f.select :allocation, Account::ALLOCATIONS, { include_blank: true }, { class: 'custom-select custom-select-sm' } %>
     </div>
     <div class="col-sm-6">
-      <%= f.submit 'Update', class: 'btn btn-sm btn-secondary' %>
+      <button type="submit" class="btn btn-sm btn-secondary">
+        <i class="far fa-save"></i>
+      </button>
     </div>
   </div>
 <% end %>

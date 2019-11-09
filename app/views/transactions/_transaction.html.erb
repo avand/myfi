@@ -1,7 +1,7 @@
 <tr>
-  <td class="text-nowrap"><%= transaction.date %></td>
+  <td class="text-nowrap"><small><%= transaction.date %></small></td>
   <td>
-    <div><%= transaction.name %></div>
+    <div><small><%= transaction.name %></small></div>
     <div>
       <% if transaction.account.present? %>
         <%= render partial: 'accounts/type', locals: { account: transaction.account, label: transaction.account.name } %>
@@ -13,7 +13,7 @@
       </small>
     </div>
   </td>
-  <td class="text-right"><%= number_to_currency transaction.amount %></td>
+  <td class="text-right"><small><%= number_to_currency transaction.amount %></small></td>
   <td>
     <%= render partial: 'form', locals: { transaction: transaction } %>
   </td>
