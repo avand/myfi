@@ -43,6 +43,9 @@
       <small class="mr-2"><strong>Total</strong>: <%= number_with_delimiter @transactions.count %></small>
       <small><strong>Sum</strong>: <%= number_to_currency @transactions.sum(:amount) %></small>
     </div>
+    <div class="mt-2">
+      <%= line_chart @transactions.group(:date).count %>
+    </div>
     <table class="table table-borderless table-striped">
       <thead>
         <tr>
