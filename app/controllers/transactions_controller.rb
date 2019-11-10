@@ -35,6 +35,10 @@ class TransactionsController < ApplicationController
       end
     end
 
+    if !params[:filters] || params[:filters][:include_payments_and_transfers].blank?
+      @transactions = @transactions.where(payment_or_transfer: [nil, false])
+    end
+
     respond_to do |format|
       format.html
       format.csv do
@@ -102,8 +106,14 @@ class TransactionsController < ApplicationController
   def update
     transaction = Transaction.find(params[:id])
 
-    transaction.update(allocation: params[:transaction][:allocation])
+    transaction.update(transaction_params)
 
     render partial: 'form', locals: { transaction: transaction }, layout: false
+  end
+
+  private
+
+  def transaction_params
+    params.require(:transaction).permit(:allocation, :payment_or_transfer)
   end
 end

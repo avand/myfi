@@ -34,6 +34,15 @@
         </div>
       </div>
 
+      <div class="form-group">
+        <div class="custom-control custom-checkbox">
+          <input name="filters[include_payments_and_transfers]" type="checkbox" class="custom-control-input" id="include-payments-and-transfers-checkbox" <%= params[:filters] && params[:filters][:include_payments_and_transfers] && 'checked' -%>>
+          <label class="custom-control-label" for="include-payments-and-transfers-checkbox">
+            Include payments and transfers
+          </label>
+        </div>
+      </div>
+
       <input type="submit" value="Filter" class="btn btn-primary">
       <%= link_to 'Download CSV', transactions_path(format: 'csv', filters: params[:filters].try(:to_unsafe_hash)), class: 'btn btn-outline-primary' %>
     <% end %>

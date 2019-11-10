@@ -1,12 +1,25 @@
 <%= form_with(model: transaction) do |f| %>
   <div class="form-row">
-    <div class="col-sm-6">
-      <%= f.select :allocation, Account::ALLOCATIONS, { include_blank: true }, { class: 'custom-select custom-select-sm' } %>
+    <div class="col-sm-9">
+      <div>
+        <%= f.select :allocation, Account::ALLOCATIONS, { include_blank: true }, { class: 'custom-select custom-select-sm' } %>
+      </div>
     </div>
-    <div class="col-sm-6">
-      <button type="submit" class="btn btn-sm btn-secondary">
+    <div class="col-sm-3">
+      <button type="submit" class="btn btn-sm btn-secondary btn-block">
         <i class="far fa-save"></i>
       </button>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="col-sm-12">
+      <div class="custom-control custom-checkbox">
+        <% input_id = "payment-or-transfer-#{transaction.id}" %>
+        <input name="transaction[payment_or_transfer]" type="checkbox" class="custom-control-input" id="<%= input_id -%>" <%= transaction.payment_or_transfer? && 'checked' -%>>
+        <label class="custom-control-label" for="<%= input_id -%>">
+          <small>Payment or transfer?</small>
+        </label>
+      </div>
     </div>
   </div>
 <% end %>
