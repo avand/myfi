@@ -34,15 +34,8 @@ RSpec.describe TransactionsController, type: :controller do
       end
     end
 
-    let(:plaid_client_transaction_response) do
-      double.tap do |response|
-        allow(response).to receive(:transactions).and_return([plaid_client_transaction])
-        allow(response).to receive(:total_transactions).and_return(1)
-      end
-    end
-
     before do
-      allow(PLAID_CLIENT.transactions).to receive(:get).and_return(plaid_client_transaction_response)
+      allow_any_instance_of(Account).to receive(:get_transactions_from_plaid).and_return([plaid_client_transaction])
     end
 
     it 'creates a Transaction' do

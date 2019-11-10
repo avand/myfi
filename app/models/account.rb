@@ -21,4 +21,23 @@ class Account < ApplicationRecord
   ].freeze
 
   validates :default_allocation, inclusion: { in: ALLOCATIONS, if: proc { |a| a.default_allocation.present? } }
+
+  def get_transactions_from_plaid(start_date, end_date, offset: 0, count: 500)
+    response = PLAID_CLIENT.transactions.get(
+      plaid_item.access_token,
+      start_date,
+      end_date,
+      { offset: offset, count: count, account_ids: [plaid_id] },
+    )
+
+    transactions = response.transactions
+
+    if offset + transactions.length < response.total_transactions
+      transactions += get_transactions_from_plaid(
+        start_date,
+        end_date, count: count, offset: transactions.length)
+    end
+
+    transactions
+  end
 end
