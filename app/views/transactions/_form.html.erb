@@ -15,7 +15,7 @@
     <div class="col-sm-12">
       <div class="custom-control custom-checkbox">
         <% input_id = "payment-or-transfer-#{transaction.id}" %>
-        <input name="transaction[payment_or_transfer]" type="checkbox" class="custom-control-input" id="<%= input_id -%>" <%= transaction.payment_or_transfer? && 'checked' -%>>
+        <%= f.check_box :payment_or_transfer, { class: 'custom-control-input', id: input_id }, 'true', 'false' %>
         <label class="custom-control-label" for="<%= input_id -%>">
           <small>Payment or transfer?</small>
         </label>
