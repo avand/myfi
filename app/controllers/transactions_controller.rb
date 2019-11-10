@@ -111,6 +111,10 @@ class TransactionsController < ApplicationController
     render partial: 'form', locals: { transaction: transaction }, layout: false
   end
 
+  def summary
+    @data = Transaction.group("substr(date, 1, 7)", :allocation).sum(:amount)
+  end
+
   private
 
   def transaction_params

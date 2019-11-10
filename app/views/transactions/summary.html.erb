@@ -1,0 +1,17 @@
+<table class="table">
+  <tr>
+    <th></th>
+    <% Account::ALLOCATIONS.each do |allocation| %>
+      <th class="text-right"><%= allocation %></th>
+    <% end %>
+  </tr>
+  <% @data.keys.map(&:first).flatten.uniq.sort.each do |day_month| %>
+    <tr>
+      <th><%= day_month %></th>
+      <% Account::ALLOCATIONS.each do |allocation| %>
+        <% amount = @data[[day_month, allocation]] %>
+        <td class="text-right"><%= amount && number_to_currency(amount) %></td>
+      <% end %>
+    </tr>
+  <% end %>
+</table>
