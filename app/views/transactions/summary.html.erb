@@ -10,7 +10,18 @@
       <th><%= day_month %></th>
       <% Account::ALLOCATIONS.each do |allocation| %>
         <% amount = @data[[day_month, allocation]] %>
-        <td class="text-right"><%= amount && number_to_currency(amount) %></td>
+        <% next_month = (day_month.split('-')[1].to_i + 1).to_s.rjust(2, '0') %>
+        <% start_date = "#{day_month[0..6]}-01" %>
+        <% end_date = "#{day_month[0..4]}#{next_month}-01" %>
+        <td class="text-right">
+          <% if amount %>
+            <%= link_to number_to_currency(amount), transactions_path(filters: {
+              allocation: allocation,
+              start_date: start_date,
+              end_date: end_date,
+            }) %>
+          <% end %>
+        </td>
       <% end %>
     </tr>
   <% end %>
