@@ -36,7 +36,7 @@ class TransactionsController < ApplicationController
     end
 
     if !params[:filters] || params[:filters][:include_payments_and_transfers].blank?
-      @transactions = @transactions.where(payment_or_transfer: [nil, false])
+      @transactions = @transactions.not_payment_or_transfer
     end
 
     respond_to do |format|
@@ -112,7 +112,11 @@ class TransactionsController < ApplicationController
   end
 
   def summary
-    @data = Transaction.group("substr(date, 1, 7)", :allocation).sum(:amount)
+    @data = Transaction
+      .allocated
+      .not_payment_or_transfer
+      .group("substr(date, 1, 7)", :allocation)
+      .sum(:amount)
   end
 
   private
