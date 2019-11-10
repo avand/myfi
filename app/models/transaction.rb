@@ -13,30 +13,38 @@ class Transaction < ApplicationRecord
     "Y#{year_month_day[0]}M#{year_month_day[1]}"
   end
 
-  def self.auto_update_payments_or_transfers
-    where(name: "USAA FUNDS TRANSFER CR").update_all(payment_or_transfer: true)
-    where("name LIKE 'TO%USAA FUNDS TRANSFER DB'").update_all(payment_or_transfer: true)
-    where(name: "TAX WITHHELD").update_all(payment_or_transfer: true)
-    where(name: "INTEREST PAID").update_all(payment_or_transfer: true)
-    where("name LIKE 'AUTOPAY %AUTOPAY AUTO-PMT'").update_all(payment_or_transfer: true)
-    where("name LIKE 'Online Transfer % transaction%'").update_all(payment_or_transfer: true)
-    where(name: "BK OF AMER MC ONLINE PMT").update_all(payment_or_transfer: true)
-    where("name like 'AIRBNB, INC DIRECT DEP PPD ID:%'").update_all(payment_or_transfer: true)
-    where("name LIKE 'USAA CREDIT CARD PAYMENT % WEB ID: %'").update_all(payment_or_transfer: true)
-    where("name LIKE 'AUTOMATIC PAYMENT - THANK%'").update_all(payment_or_transfer: true)
-    where(name: 'CHASE CREDIT CRD AUTOPAY').update_all(payment_or_transfer: true)
-    where(name: 'BA ELECTRONIC PAYMENT').update_all(payment_or_transfer: true)
+  def self.auto_update_payments_or_transfers(force = true)
+    where_clauses = [
+      { name: 'USAA FUNDS TRANSFER CR' },
+      { name: 'TAX WITHHELD' },
+      { name: 'INTEREST PAID' },
+      { name: 'BK OF AMER MC ONLINE PMT' },
+      { name: 'CHASE CREDIT CRD AUTOPAY' },
+      { name: 'BA ELECTRONIC PAYMENT' },
+      { name: 'CITI AUTOPAY PAYMENT' },
+      { name: 'JPMorgan Chase Ext Trnsfr' },
+      { name: 'Payment Thank You-Mobile' },
+      "name LIKE 'TO%USAA FUNDS TRANSFER DB'",
+      "name LIKE 'AUTOPAY %AUTOPAY AUTO-PMT'",
+      "name LIKE 'Online Transfer % transaction%'",
+      "name like 'AIRBNB, INC DIRECT DEP PPD ID:%'",
+      "name LIKE 'AUTOMATIC PAYMENT %'",
+      "name LIKE 'USAA CREDIT CARD PAYMENT % WEB ID: %'",
+      "name LIKE 'USAA CHK-INTRNT TRANSFER%'",
+      "name LIKE 'USAA.COM PAYMNT CREDIT CRD%'",
+    ].each do |where_clause|
+      query = force ? all : where(payment_or_transfer: nil)
+      query.where(where_clause).update_all(payment_or_transfer: true)
+    end
   end
 
   def self.auto_update_allocations(force = false)
     query = force ? all : unallocated
-
-    query.includes(:account).find_each do |transaction|
-      transaction.update(allocation: transaction.account.default_allocation)
-    end
+    query = query.where.not(name: 'AIRBNB, INC DIRECT DEP')
 
     query.where(name: [
       'GREENVIEW MANAGE 4158303125',
+      'NAVIA BENEFIT SO FLEXIBLE B'
     ]).update_all(allocation: Account::ALLOCATION_RECURRING)
 
     query.where(name: [
@@ -47,5 +55,9 @@ class Transaction < ApplicationRecord
       'SIERRA TELEPHONE COMPA',
       'SIERRA TELEPHONE CO INC',
     ]).update_all(allocation: Account::ALLOCATION_KALEIDOSCOPE)
+
+    query.includes(:account).find_each do |transaction|
+      transaction.update(allocation: transaction.account.default_allocation)
+    end
   end
 end
