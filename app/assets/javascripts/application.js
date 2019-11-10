@@ -18,9 +18,16 @@
 //= require Chart.bundle
 //= require_tree .
 
+function submitParentForm(event) {
+  $(event.target).parents('form[data-remote=true]').find('[type=submit]').click();
+}
+
 $(document).ready(function() {
   $('body').on('ajax:success', 'form[data-remote=true]', function(event) {
     event.target.parentElement.innerHTML = event.detail[2].response;
     $('#transaction-updated-toast').toast('show');
   });
+
+  $('body').on('click', 'form[data-remote=true] :checkbox', submitParentForm)
+  $('body').on('change', 'form[data-remote=true] select', submitParentForm)
 })
