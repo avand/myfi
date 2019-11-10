@@ -32,6 +32,6 @@ class PlaidItemsController < ApplicationController
       record
     end
 
-    redirect_to accounts_path, notice: "Linked #{plaid_item.institution_name} (created #{time_ago_in_words plaid_item.created_at} ago) and #{accounts.size} account(s)."
+    redirect_to accounts_path, notice: "Linked #{plaid_item.institution_name} (created #{time_ago_in_words plaid_item.created_at} ago) and updated #{accounts.size} account(s)."
   end
 end
