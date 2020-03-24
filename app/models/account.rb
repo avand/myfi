@@ -4,7 +4,7 @@ class Account < ApplicationRecord
   has_many :transactions
   belongs_to :plaid_item
 
-  ALLOCATION_JEPHPH = 'jephph'.freeze
+  ALLOCATION_AUTO = 'auto'.freeze
   ALLOCATION_KALEIDOSCOPE = 'kaleidoscope'.freeze
   ALLOCATION_LIFESTYLE = 'lifestyle'.freeze
   ALLOCATION_LIVING = 'living'.freeze
@@ -12,7 +12,7 @@ class Account < ApplicationRecord
   ALLOCATION_TRAVEL = 'travel'.freeze
 
   ALLOCATIONS = [
-    ALLOCATION_JEPHPH,
+    ALLOCATION_AUTO,
     ALLOCATION_KALEIDOSCOPE,
     ALLOCATION_LIFESTYLE,
     ALLOCATION_LIVING,
