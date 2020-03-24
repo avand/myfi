@@ -8,11 +8,6 @@ class Transaction < ApplicationRecord
   scope :payment_or_transfer, -> { where(payment_or_transfer: true) }
   scope :not_payment_or_transfer, -> { where(payment_or_transfer: [nil, false]) }
 
-  def year_month
-    year_month_day = date.split('-')
-    "Y#{year_month_day[0]}M#{year_month_day[1]}"
-  end
-
   def self.auto_update_payments_or_transfers(force = true)
     where_clauses = [
       { name: 'USAA FUNDS TRANSFER CR' },

@@ -43,7 +43,7 @@ class TransactionsController < ApplicationController
       format.html
       format.csv do
         csv = CSV.generate(headers: true) do |csv|
-          csv << %w(date description amount account default_allocation year_month)
+          csv << %w(date description amount account allocation)
 
           @transactions.each do |transaction|
             csv << [
@@ -51,13 +51,13 @@ class TransactionsController < ApplicationController
               transaction.name,
               transaction.amount,
               transaction.account.name,
-              transaction.account.default_allocation,
-              transaction.year_month,
+              transaction.allocation,
             ]
           end
         end
 
-        send_data csv, filename: 'transactions.csv'
+        clever_file_name = params[:filters].values.reject(&:blank?).join('-')
+        send_data csv, filename: "#{clever_file_name}.csv"
       end
     end
   end
