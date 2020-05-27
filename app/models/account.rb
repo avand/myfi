@@ -20,6 +20,8 @@ class Account < ApplicationRecord
     ALLOCATION_TRAVEL,
   ].freeze
 
+  default_scope -> { order(:name) }
+
   validates :default_allocation, inclusion: { in: ALLOCATIONS, if: proc { |a| a.default_allocation.present? } }
 
   def get_transactions_from_plaid(start_date, end_date, offset: 0, count: 500)

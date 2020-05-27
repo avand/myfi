@@ -8,7 +8,7 @@
 
       <div class="form-group">
         <small class="text-muted"><%= label_tag 'filters[account_id]', 'Account' %></small>
-        <%= collection_select(:filters, :account_id, Account.all, :id, :name, { include_blank: 'all', selected: params[:filters] && params[:filters][:account_id] }, { class: 'form-control' }) %>
+        <%= grouped_collection_select(:filters, :account_id, PlaidItem.all, :accounts, :institution_name, :id, :name, { include_blank: 'all', selected: params[:filters] && params[:filters][:account_id] }, { class: 'form-control' }) %>
       </div>
 
       <div class="form-group">
@@ -47,7 +47,7 @@
       <%= link_to 'Download CSV', transactions_path(format: 'csv', filters: params[:filters].try(:to_unsafe_hash)), class: 'btn btn-outline-primary' %>
     <% end %>
   </div>
-  
+
   <div class="col-md-9">
     <div class="mt-2">
       <small class="mr-2"><strong>Total</strong>: <%= number_with_delimiter @transactions.count %></small>
