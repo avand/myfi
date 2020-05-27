@@ -1,5 +1,4 @@
 class PlaidItem < ApplicationRecord
-  scope :active, -> { where(expired_at: nil) }
   scope :expired, -> { where('expired_at is not null') }
 
   has_many :accounts

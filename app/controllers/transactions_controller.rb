@@ -70,7 +70,16 @@ class TransactionsController < ApplicationController
     @accounts = Account.all
 
     @accounts.find_each do |account|
-      transactions = account.get_transactions_from_plaid(start_date, end_date)
+      transactions = []
+
+      begin
+        transactions = account.get_transactions_from_plaid(start_date, end_date)
+      rescue Plaid::ItemError => error
+        if error.message.include?('ITEM_LOGIN_REQUIRED')
+          account.plaid_item.expire
+        end
+      end
+
 
       transactions.each do |transaction|
         next if transaction.pending

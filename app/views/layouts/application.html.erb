@@ -43,7 +43,7 @@
         </ul>
 
         <button id="import-button" class="btn btn-sm btn-outline-secondary" type="button" data-toggle="modal" data-target="#import-modal">Import Transactions</button>
-        <button id="link-button" class="btn btn-sm btn-outline-secondary ml-2">Link Account</button>
+        <button class="plaid-link-account btn btn-sm btn-outline-secondary ml-2">Link Account</button>
       </div>
     </nav>
 
@@ -51,6 +51,17 @@
       <% if flash[:notice].present? %>
         <div class="alert alert-success mt-sm-3" role="alert">
           <%= flash[:notice] %>
+        </div>
+      <% end %>
+
+      <% if @expired_plaid_items.present? %>
+        <div class="alert alert-warning mt-3">
+          The following financial institutions require you to re-authenticate:
+          <ul class="mb-0">
+            <% @expired_plaid_items.each do |plaid_item| %>
+              <li><%= link_to plaid_item.institution_name, accounts_path, class: 'plaid-link-account' %></li>
+            <% end %>
+          </ul>
         </div>
       <% end %>
 
@@ -116,7 +127,8 @@
         },
       });
 
-      $('#link-button').on('click', function(e) {
+      $('.plaid-link-account').on('click', function(e) {
+        e.preventDefault();
         handler.open();
       });
     })(jQuery);

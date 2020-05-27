@@ -11,12 +11,15 @@ class PlaidItemsController < ApplicationController
     accounts = PLAID_CLIENT.accounts.get(access_token).accounts
     institution = PLAID_CLIENT.institutions.get_by_id(item.institution_id).institution
 
-    plaid_item = PlaidItem.create_with({
-      item_id: item.item_id,
-      access_token: access_token,
-    }).find_or_create_by({
+    plaid_item = PlaidItem.find_or_create_by({
       institution_name: institution.name,
       institution_id: institution.institution_id,
+    })
+
+    plaid_item.update({
+      item_id: item.item_id,
+      access_token: access_token,
+      expired_at: nil,
     })
 
     accounts = accounts.map do |account|
